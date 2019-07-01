@@ -56,3 +56,41 @@
   height: 30px;
   width: 30px;
 } */
+
+.Footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.TodoFilters {
+  display: flex;
+  list-style-type: none;
+  margin-right: 16px;
+}
+
+.TodoFilters > li {
+  margin-right: 8px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.TodoFilters .active {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  border: none;
+  background-color: #fff;
+  font-family: "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+}
+
+button:hover {
+  text-decoration: underline;
+}
