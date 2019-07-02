@@ -160,7 +160,7 @@ class App extends Component {
             <TodoItem key={index} item={item} onClick={this.onItemClicked(item)} />)
         }
         {
-          this.state[this.state.currentFilter].length === 0 && 'Nothing here'
+          this.state[this.state.currentFilter].length === 0 && <p className='Nothing'>Nothing here</p>
         }
 
         <div className="Footer">
