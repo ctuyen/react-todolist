@@ -7,15 +7,24 @@ import classNames from 'classnames';
 class App extends Component {
   constructor() {
     super();
+
+    let dataString = localStorage.getItem('todoItems');
+    let todoItems;
+
+    if (dataString) {
+      todoItems = JSON.parse(dataString);
+    }
+    else {
+      todoItems = []
+    }
+
+    let numItems = todoItems.filter(item => item.isComplete !== true).length;
+
     this.state = {
       newItem: '',
-      numItems: 2,
+      numItems,
       currentFilter: 'todoItems',
-      todoItems: [
-        { title: 'Đi đá bóng', isComplete: true },
-        { title: 'Đi chợ' },
-        { title: 'Đi siêu thị' }
-      ]
+      todoItems
     }
   }
 
@@ -48,18 +57,22 @@ class App extends Component {
         })
       }
 
+      // immutability
+      todoItems = [
+        ...todoItems.slice(0, index),
+        {
+          ...item,
+          isComplete: !isComplete
+        },
+        ...todoItems.slice(index + 1)
+      ];
+
+      localStorage.setItem('todoItems', JSON.stringify(todoItems));
+
       this.setState({
         newTodo: '',
         numItems,
-        // immutability
-        todoItems: [
-          ...todoItems.slice(0, index),
-          {
-            ...item,
-            isComplete: !isComplete
-          },
-          ...todoItems.slice(index + 1)
-        ]
+        todoItems
       })
     }
   }
@@ -77,14 +90,18 @@ class App extends Component {
       }
 
       let { todoItems, numItems } = this.state;
-
+      let activeItems = todoItems.filter(item => item.isComplete !== true);
       todoItems.push(newItem);
+      activeItems.push(newItem);
 
       this.setState({
         newTodo: '',
         numItems: numItems + 1,
-        todoItems
+        todoItems,
+        activeItems
       })
+
+      localStorage.setItem('todoItems', JSON.stringify(todoItems));
     }
   }
 
@@ -116,6 +133,19 @@ class App extends Component {
     })
   }
 
+  onDelComplete(e) {
+    let { todoItems } = this.state;
+    todoItems = todoItems.filter(item => item.isComplete !== true);
+
+    this.setState({
+      todoItems,
+      completedItems: [],
+      numItems: todoItems.length
+    })
+
+    localStorage.setItem('todoItems', JSON.stringify(todoItems));
+  }
+
   render() {
     return (
       <div className="App">
@@ -134,13 +164,13 @@ class App extends Component {
         }
 
         <div className="Footer">
-          <span className="TodoCount">{this.state.numItems} items left</span>
+          <span className="TodoCount">{this.state.numItems} item(s) left</span>
           <ul className="TodoFilters" >
             <li className={classNames({'active': this.state.currentFilter === 'todoItems'})} onClick={this.onAllFilter.bind(this)}>All</li>
             <li className={classNames({'active': this.state.currentFilter === 'activeItems'})} onClick={this.onActiveFilter.bind(this)}>Active</li>
             <li className={classNames({'active': this.state.currentFilter === 'completedItems'})} onClick={this.onCompletedFilter.bind(this)}>Completed</li>
           </ul>
-          <button>Clear Completed</button>
+          <button onClick={this.onDelComplete.bind(this)}>Clear Completed</button>
         </div>
       </div>
     );
