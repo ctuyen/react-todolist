@@ -146,11 +146,35 @@ class App extends Component {
     localStorage.setItem('todoItems', JSON.stringify(todoItems));
   }
 
+  onSelectAll(e) {
+    let todoItems = this.state.todoItems;
+    let numItems = this.state.numItems;
+    
+    let newTodos = todoItems.map((todo) => {
+      if(numItems !== 0){
+        todo.isComplete = true;
+      } else {
+        todo.isComplete = false;
+      }
+      return todo;
+    });
+
+    //allCompleted = !allCompleted;
+    numItems = numItems ? 0 : newTodos.length;
+
+    this.setState({
+      todoItems: newTodos,
+      numItems
+    });
+
+    localStorage.setItem('todoItems', JSON.stringify(newTodos));
+  }
+
   render() {
     return (
       <div className="App">
         <div className="Header">
-          <img src={arrow} className="arrow" />
+          <img src={arrow} className="arrow" onClick={this.onSelectAll.bind(this)} />
           <input type="text" className="NewTodo" placeholder='Enter your task here' onKeyUp={this.onKeyUp.bind(this)} value={this.state.newTodo} onChange={this.onChange.bind(this)}></input>
         </div>
         
